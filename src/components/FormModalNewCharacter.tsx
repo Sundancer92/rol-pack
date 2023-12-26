@@ -1,0 +1,205 @@
+"use client";
+import React, { Fragment, useRef, useState } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import FormSelectField from "./FormSelectField";
+
+const games = [
+	{ id: 1, name: "Hombre Lobo: Apocalipsis", unavailable: false },
+	{ id: 2, name: "Pokemon", unavailable: false },
+	{ id: 3, name: "Avatar", unavailable: false },
+	{ id: 5, name: "Cyberpunk: 2077", unavailable: false },
+];
+
+const FormModalNewCharacter = () => {
+	const [selectedGame, setSelectedGame] = useState(games[0]);
+	const [newCharacter, setNewCharacter] = useState({
+		newName: "",
+		newInitiativeOne: 0,
+		newInitiativeTwo: 0,
+		newInitiativeThree: 0,
+		game: selectedGame.id,
+	});
+
+	const [open, setOpen] = useState(true);
+
+	const cancelButtonRef = useRef(null);
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+
+		setNewCharacter({
+			...newCharacter,
+			[name]: value,
+		});
+	};
+
+	const handleCreateNewCharacter = () => {
+		setNewCharacter({
+			...newCharacter,
+			game: selectedGame.id,
+		});
+		console.log(newCharacter);
+		setOpen(!open);
+	};
+
+	return (
+		<>
+			<button
+				type="button"
+				onClick={() => setOpen(true)}
+				className="mt-1"
+			>
+				<PlusCircleIcon className="h-6 w-6 text-white" />
+			</button>
+			<Transition.Root
+				show={open}
+				as={Fragment}
+			>
+				<Dialog
+					as="div"
+					className="relative z-10"
+					initialFocus={cancelButtonRef}
+					onClose={setOpen}
+				>
+					<Transition.Child
+						as={Fragment}
+						enter="ease-out duration-300"
+						enterFrom="opacity-0"
+						enterTo="opacity-100"
+						leave="ease-in duration-200"
+						leaveFrom="opacity-100"
+						leaveTo="opacity-0"
+					>
+						<div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity " />
+					</Transition.Child>
+
+					<div className="fixed  bottom-10  z-10 w-screen overflow-y-auto">
+						<div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+							<Transition.Child
+								as={Fragment}
+								enter="ease-out duration-300"
+								enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+								enterTo="opacity-100 translate-y-0 sm:scale-100"
+								leave="ease-in duration-200"
+								leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+								leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+							>
+								<Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg ">
+									<div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+										<div className="sm:flex sm:items-start">
+											<div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left justify-center">
+												<div>
+													<Dialog.Title
+														as="h3"
+														className="text-base font-semibold leading-6 text-gray-900"
+													>
+														CREATE NEW CHARACTER
+													</Dialog.Title>
+												</div>
+												<div className="mt-2">
+													<form action="">
+														<div className="grid grid-cols-1 gap-2 text-start">
+															<p>Game:</p>
+															<FormSelectField
+																selectedItem={selectedGame}
+																setSelectedItem={
+																	setSelectedGame
+																}
+																list={games}
+															/>
+
+															<label htmlFor="newName">
+																Name:
+															</label>
+															<input
+																name="newName"
+																className="border-2 border-slate-600 rounded-md px-1"
+																type="text"
+																placeholder="Insert name."
+																onChange={(e) =>
+																	handleChange(e)
+																}
+															/>
+															{/* Suma de campos pra iniciativa */}
+															<p className="text-center">
+																Iniciative
+															</p>
+															<div className="grid grid-cols-3 gap-1">
+																<div>
+																	<label htmlFor="newInitiativeOne">
+																		#1
+																	</label>
+																	<input
+																		name="newInitiativeOne"
+																		className="border-2 border-slate-600 rounded-md px-1 w-full"
+																		type="number"
+																		placeholder="0"
+																		onChange={(e) =>
+																			handleChange(e)
+																		}
+																	/>
+																</div>
+																<div>
+																	<label htmlFor="newInitiativeTwo">
+																		#2
+																	</label>
+																	<input
+																		name="newInitiativeTwo"
+																		className="border-2 border-slate-600 rounded-md px-1 w-full"
+																		type="number"
+																		placeholder="0"
+																		onChange={(e) =>
+																			handleChange(e)
+																		}
+																	/>
+																</div>
+																<div>
+																	<label htmlFor="newInitiativeThree">
+																		#3
+																	</label>
+																	<input
+																		name="newInitiativeThree"
+																		className="border-2 border-slate-600 rounded-md px-1 w-full"
+																		type="number"
+																		placeholder="0"
+																		onChange={(e) =>
+																			handleChange(e)
+																		}
+																	/>
+																</div>
+															</div>
+														</div>
+													</form>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+										<button
+											type="button"
+											className="inline-flex w-full justify-center rounded-md bg-gradient-to-r from-indigo-500 to-green-500 px-3 py-2 text-sm font-semibold text-white shadow-sm sm:ml-3 sm:w-auto"
+											onClick={() => handleCreateNewCharacter()}
+										>
+											Create
+										</button>
+										<button
+											type="button"
+											className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+											onClick={() => setOpen(false)}
+											ref={cancelButtonRef}
+										>
+											Cancel
+										</button>
+									</div>
+								</Dialog.Panel>
+							</Transition.Child>
+						</div>
+					</div>
+				</Dialog>
+			</Transition.Root>
+		</>
+	);
+};
+
+export default FormModalNewCharacter;
