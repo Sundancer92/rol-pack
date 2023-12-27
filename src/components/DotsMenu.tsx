@@ -53,31 +53,33 @@ const DotsMenu = () => {
 				leaveFrom="opacity-100 translate-y-0"
 				leaveTo="opacity-0 translate-y-1"
 			>
-				<Popover.Panel className="absolute  z-10 flex w-screen max-w-max h-screen -translate-x-32 px-2 ">
-					<div className="overflow-auto h-min  rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
-						<div className="">
-							{solutions.map((item) => (
-								<div
-									key={item.name}
-									className="group relative flex gap-x-2 rounded-lg p-4 hover:bg-gray-50 items-center"
-								>
-									<div className="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
-										<item.icon
-											className="h-6 w-6 text-gray-600 group-hover:text-indigo-600"
-											aria-hidden="true"
-										/>
+				<Popover.Panel className="absolute  z-10 flex w-screen max-w-max -translate-x-32 px-2 h-fit">
+					<div className="rounded-3xl bg-gradient-to-b from-blue-500 to-red-500 p-0.5">
+						<div className="overflow-auto h-min rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
+							<div className="">
+								{solutions.map((item) => (
+									<div
+										key={item.name}
+										className="group relative flex  rounded-lg px-3 hover:bg-gray-50 items-center"
+									>
+										<div className=" flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
+											<item.icon
+												className="h-6 w-6 text-gray-600 group-hover:text-indigo-600"
+												aria-hidden="true"
+											/>
+										</div>
+										<div>
+											<a
+												href={item.href}
+												className="font-semibold text-gray-900"
+											>
+												{item.name}
+												<span className="absolute inset-0" />
+											</a>
+										</div>
 									</div>
-									<div>
-										<a
-											href={item.href}
-											className="font-semibold text-gray-900"
-										>
-											{item.name}
-											<span className="absolute inset-0" />
-										</a>
-									</div>
-								</div>
-							))}
+								))}
+							</div>
 						</div>
 					</div>
 				</Popover.Panel>

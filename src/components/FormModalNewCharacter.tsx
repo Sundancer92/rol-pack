@@ -21,7 +21,7 @@ const FormModalNewCharacter = () => {
 		game: selectedGame.id,
 	});
 
-	const [open, setOpen] = useState(true);
+	const [open, setOpen] = useState(false);
 
 	const cancelButtonRef = useRef(null);
 
@@ -58,7 +58,7 @@ const FormModalNewCharacter = () => {
 			>
 				<Dialog
 					as="div"
-					className="relative z-10"
+					className=" z-10"
 					initialFocus={cancelButtonRef}
 					onClose={setOpen}
 				>

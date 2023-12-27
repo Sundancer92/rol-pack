@@ -1,5 +1,6 @@
 import React from "react";
 import { PhotoIcon } from "@heroicons/react/24/outline";
+import DotsMenu from "./DotsMenu";
 
 const SessionCharacterCard = () => {
 	return (
@@ -15,8 +16,11 @@ const SessionCharacterCard = () => {
 					{/* Descripcion y acciones */}
 					<div className="w-full">
 						<div className="flex flex-row text-white justify-between mx-2 text-sm">
-							<p>Nuevo Amanecer</p>
-							<p>99</p>
+							<p>Eterno Acompanante</p>
+							<div className="flex">
+								<p>99</p>
+								<DotsMenu />
+							</div>
 						</div>
 						<hr className="my-0.5 h-0.5 bg-neutral-100 opacity-100 dark:opacity-50" />
 						<div className="text-xs text-white mx-2">
