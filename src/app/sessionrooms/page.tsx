@@ -1,6 +1,6 @@
 import React from "react";
 import { GlobeAltIcon } from "@heroicons/react/24/outline";
-import FormModalNewSessionRoom from "@/components/FormModalNewSessionRoom";
+import FormModalNewSessionRoom from "@/components/Forms/FormModalNewSessionRoom";
 import Link from "next/link";
 import DotsMenu from "@/components/DotsMenu";
 

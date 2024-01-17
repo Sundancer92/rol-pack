@@ -1,6 +1,6 @@
 import React from "react";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
-import FormModalNewCharacter from "@/components/FormModalNewCharacter";
+import FormModalNewCharacter from "@/components/Forms/FormModalNewCharacter";
 import DotsMenu from "@/components/DotsMenu";
 
 const GamePage = () => {
