@@ -31,7 +31,10 @@
 		"src/components/Forms/FormAddCharacter.js",
 		"src/components/BattleRoomDesk.js",
 		"src/components/DotsMenu.js",
-		"src/components/Navbar.js"
+		"src/components/Navbar.js",
+		"src/components/Forms/FormModalNewGame.js",
+		"src/components/Forms/FormModalNewCharacter.js",
+		"src/components/Forms/FormAddCharacterToSession.js"
 	],
 	"exclude": ["node_modules"]
 }
