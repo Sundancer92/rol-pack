@@ -22,6 +22,16 @@
 			"@/*": ["./src/*"]
 		}
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+	"include": [
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		".next/types/**/*.ts",
+		"src/components/Cards/SessionCharacterCard.js",
+		"src/components/Forms/FormAddCharacter.js",
+		"src/components/BattleRoomDesk.js",
+		"src/components/DotsMenu.js",
+		"src/components/Navbar.js"
+	],
 	"exclude": ["node_modules"]
 }
