@@ -37,7 +37,7 @@ const SessionCharacterCard = ({
 			imActiveActionList === true &&
 			imActiveUsers === false &&
 			myInfo.done === false &&
-			myInfo.incapacitated === false &&
+			myInfo.incapacitated === false
 		) {
 			setMyInfo({
 				...myInfo,
