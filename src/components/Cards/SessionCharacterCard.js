@@ -11,11 +11,15 @@ const SessionCharacterCard = ({
 }) => {
 	const [myInfo, setMyInfo] = useState(charData);
 
-	// useEffect(() => {}, [myInfo]);
+	useEffect(() => {
+		console.log(myInfo);
+	}, [myInfo]);
 
 	useEffect(() => {
 		let imActiveActionList = sessionInfo.actionOrder[0] === myInfo.initiative;
 		let imActiveUsers = sessionInfo.activeUsers.includes(myInfo.id);
+		// Reviso los arreglos de actionOrder y activeUsers, si están vacios, seteo a todos en false para administrar
+		// la nueva ronda.
 		if (
 			sessionInfo.activeUsers.length === 0 &&
 			sessionInfo.actionOrder.length === 0
@@ -26,16 +30,20 @@ const SessionCharacterCard = ({
 				done: false,
 			});
 		}
+		// Como el estado en sessionInfo cambió, reviso el estado del personaje para que se enceuntra activo y
+		// pueda actuar.
 		if (
 			myInfo.active === false &&
 			imActiveActionList === true &&
 			imActiveUsers === false &&
-			myInfo.done === false
+			myInfo.done === false &&
+			myInfo.incapacitated === false &&
 		) {
 			setMyInfo({
 				...myInfo,
 				active: true,
 				actions: 1,
+				waiting: false,
 			});
 			setSessionInfo((prevSessionInfo) => ({
 				...sessionInfo,
@@ -45,28 +53,41 @@ const SessionCharacterCard = ({
 	}, [sessionInfo]);
 
 	useEffect(() => {
+		let imActiveActionList = sessionInfo.actionOrder[0] === myInfo.initiative;
 		if (myInfo.actions === 0 && myInfo.active) {
-			setMyInfo({
-				...myInfo,
-				active: false,
-				done: true,
-			});
+			if (imActiveActionList) {
+				setMyInfo({
+					...myInfo,
+					active: false,
+					done: true,
+				});
+			} else {
+				setMyInfo({
+					...myInfo,
+					active: false,
+					done: false,
+				});
+			}
 
+			// Bloque para remover la iniciativa de actionOder
 			const initiativeToRemove = sessionInfo.actionOrder.indexOf(
 				myInfo.initiative
 			);
 			const newActionOrder = sessionInfo.actionOrder;
-			if (initiativeToRemove !== -1) {
+			// Si initiativeToRemove encontró el valor y el personaje
+			// es el primero en actuar, lo remueve del arreglo que sera el nuevo orden.
+			if (initiativeToRemove !== -1 && imActiveActionList) {
 				newActionOrder.splice(initiativeToRemove, 1);
 			}
-
+			// Bloque para remover el ID del personaje de la lista de jugadores activos.
 			const idToRemove = sessionInfo.activeUsers.indexOf(myInfo.id);
-
 			const newActiveUsers = sessionInfo.activeUsers;
+			// Si initiativeToRemove encontró el valor y el personaje, lo remueve del arreglo.
 			if (idToRemove !== -1) {
 				newActiveUsers.splice(idToRemove, 1);
 			}
 
+			// Se actualizará la data de sessionInfo
 			setSessionInfo({
 				...sessionInfo,
 				actionOrder: newActionOrder,
@@ -85,114 +106,6 @@ const SessionCharacterCard = ({
 		}
 	}, [myInfo.actions]);
 
-	// useEffect(() => {
-	// 	if (myInfo.active === true) {
-	// 		console.log("Agregandome a activeUsers", myInfo.name);
-	// 		setSessionInfo({
-	// 			...sessionInfo,
-	// 			activeUsers: [...sessionInfo.activeUsers, myInfo.id],
-	// 		});
-	// 	}
-	// }, []);
-
-	// useEffect(() => {
-	// 	if (
-	// 		myInfo.initiative === sessionInfo.actionOrder[0] &&
-	// 		sessionInfo.activeUsers.length === 0
-	// 	) {
-	// 		setMyInfo({
-	// 			...myInfo,
-	// 			actions: 1,
-	// 			active: true,
-	// 		});
-	// 	}
-	// }, [sessionInfo.actionOrder]);
-
-	// useEffect(() => {
-	// 	const isUserActive = sessionInfo.activeUsers.includes(myInfo.id);
-	// 	const isUserWaiting = sessionInfo.waitingUsers.includes(myInfo.id);
-
-	// 	// Agrega el ID del personaje a la lista de Usuarios Activos
-	// 	if (
-	// 		myInfo.active === true &&
-	// 		myInfo.actions > 0 &&
-	// 		isUserActive === false
-	// 	) {
-	// 		console.log(
-	// 			"Agrega el ID del personaje a la lista de Usuarios Activos"
-	// 		);
-	// 		setSessionInfo((prevSessionInfo) => ({
-	// 			...sessionInfo,
-	// 			activeUsers: [...prevSessionInfo.activeUsers, myInfo.id],
-	// 		}));
-	// 	}
-	// 	// Agrega el ID del personaje a la lista de Usuarios en Espera.
-	// 	if (myInfo.active === true && myInfo.waiting === true) {
-	// 		let removedActiveId = sessionInfo.activeUsers;
-	// 		removedActiveId = removedActiveId.filter(
-	// 			(element) => element !== myInfo.id
-	// 		);
-	// 		setSessionInfo((prevSessionInfo) => ({
-	// 			...sessionInfo,
-	// 			waitingUsers: [...prevSessionInfo.waitingUsers, myInfo.id],
-	// 			activeUsers: removedActiveId,
-	// 		}));
-	// 	}
-	// 	// Remueve el estado "activo" de la tarjeta y de la sesion.
-	// 	if (myInfo.actions === 0 && isUserActive === true) {
-	// 		let removedActiveId = sessionInfo.activeUsers;
-	// 		removedActiveId = removedActiveId.filter(
-	// 			(element) => element !== myInfo.id
-	// 		);
-	// 		setSessionInfo({
-	// 			...sessionInfo,
-	// 			activeUsers: removedActiveId,
-	// 		});
-	// 		setMyInfo({
-	// 			...myInfo,
-	// 			active: false,
-	// 		});
-
-	// 		const oldOrder = sessionInfo.actionOrder;
-	// 		const newOrder = oldOrder.filter(
-	// 			(element, index) => index !== oldOrder.indexOf(myInfo.initiative)
-	// 		);
-	// 		setSessionInfo({
-	// 			...sessionInfo,
-	// 			actionOrder: newOrder,
-	// 		});
-	// 	}
-	// 	//Remueve el estado "waiting" de la tarjeta y de la sesion.
-	// 	if (
-	// 		(myInfo.actions === 0 && myInfo.waiting === true) ||
-	// 		isUserWaiting === true
-	// 	) {
-	// 		setMyInfo({
-	// 			...myInfo,
-	// 			waiting: false,
-	// 		});
-
-	// 		let removedWaitingId = sessionInfo.waitingUsers;
-	// 		removedWaitingId = removedWaitingId.filter(
-	// 			(element) => element !== myInfo.id
-	// 		);
-
-	// 		setSessionInfo(() => ({
-	// 			...sessionInfo,
-	// 			waitingUsers: removedWaitingId,
-	// 		}));
-	// 	}
-	// }, [myInfo.actions, myInfo.waiting]);
-
-	const startRounds = () => {
-		if (sessionInfo.round === 0) {
-			setSessionInfo({
-				...sessionInfo,
-				round: 1,
-			});
-		}
-	};
-
 	const handleActionBtn = () => {
 		setMyInfo({
 			...myInfo,
@@ -207,12 +120,55 @@ const SessionCharacterCard = ({
 		});
 	};
 	const handleIncapacitateBtn = () => {
-		setMyInfo({
-			...myInfo,
-			actions: 0,
-			waiting: false,
-			incapacitated: true,
-		});
+		if (myInfo.incapacitated === false) {
+			console.log("entro al if");
+			setMyInfo({
+				...myInfo,
+				actions: 0,
+				waiting: false,
+				incapacitated: true,
+			});
+
+			const initiativeToRemove = sessionInfo.actionOrder.indexOf(
+				myInfo.initiative
+			);
+			const newActionOrder = sessionInfo.actionOrder;
+			// Si initiativeToRemove encontró el valor y el personaje
+			// es el primero en actuar, lo remueve del arreglo que sera el nuevo orden.
+			if (initiativeToRemove !== -1) {
+				newActionOrder.splice(initiativeToRemove, 1);
+			}
+
+			setSessionInfo((prevSessionInfo) => ({
+				...sessionInfo,
+				incapacitatedUsers: [
+					...prevSessionInfo.incapacitatedUsers,
+					myInfo.id,
+				],
+				actionOrder: newActionOrder,
+			}));
+
+			// Insertar logica para remover de la lista de incapacitados.
+		} else if (myInfo.incapacitated) {
+			console.log("entro al false");
+			setMyInfo({
+				...myInfo,
+				incapacitated: false,
+			});
+
+			// Bloque para remover el ID del personaje de la lista de jugadores activos.
+			const idToRemove = sessionInfo.incapacitatedUsers.indexOf(myInfo.id);
+			const newIncapacitatedUsers = sessionInfo.incapacitatedUsers;
+			// Si initiativeToRemove encontró el valor y el personaje, lo remueve del arreglo.
+			if (idToRemove !== -1) {
+				newIncapacitatedUsers.splice(idToRemove, 1);
+			}
+
+			setSessionInfo({
+				...sessionInfo,
+				incapacitatedUsers: newIncapacitatedUsers,
+			});
+		}
 	};
 	const handleEndTurnBtn = () => {
 		setMyInfo({
@@ -231,13 +187,6 @@ const SessionCharacterCard = ({
 				} rounded-2xl m-0.5`}
 			>
 				<div className="flex">
-					{/* Imagen */}
-					{/* <div className="border-r-2 border-white w-fit ">
-						<div className="mx-2">
-							<PhotoIcon className="h-12 w-12 text-gray-500" />
-						</div>
-					</div> */}
-					{/* Descripcion y acciones */}
 					<div className="w-full">
 						<div className="flex flex-row text-white justify-between ml-4 mt-1 text-sm">
 							<div>
@@ -267,6 +216,7 @@ const SessionCharacterCard = ({
 								<button
 									onClick={() => handleActionBtn()}
 									className="m-0.5 bg-slate-50 rounded-2xl px-1"
+									disabled={sessionInfo.round === 0}
 								>
 									ACTUAR
 								</button>
@@ -284,8 +234,9 @@ const SessionCharacterCard = ({
 								<button
 									onClick={() => handleIncapacitateBtn()}
 									className="m-0.5 bg-slate-50 rounded-2xl px-1"
+									disabled={sessionInfo.round === 0}
 								>
-									INCAPACITAR
+									{myInfo.incapacitated ? "DESPERTAR" : "INCAPACITAR"}
 								</button>
 							</div>
 							<div className="bg-gradient-to-r from-indigo-500 to-sky-500 rounded-2xl mx-auto ">

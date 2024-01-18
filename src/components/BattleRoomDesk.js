@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import FormAddCharacter from "./Forms/FormAddCharacter";
 import SessionCharacterCard from "./Cards/SessionCharacterCard";
 
@@ -21,16 +21,39 @@ const BattleRoomDesk = () => {
 		count: 0,
 	});
 
-	useEffect(() => {
-		// console.log(sessionInfo);
-	}, [sessionInfo]);
+	useEffect(() => {}, [sessionInfo]);
 
 	useEffect(() => {
 		const initiatives = roster.map((character) => character.initiative);
-		setSessionInfo({
-			...sessionInfo,
-			actionOrder: initiatives,
-		});
+
+		if (sessionInfo.incapacitatedUsers.length > 0) {
+			sessionInfo.incapacitatedUsers.map((user) => {
+				console.log("Jugadores incapacitados", user);
+				const userData = roster.filter((element) => element.id === user);
+				console.log("DETALLE Jugadores incapacitados", userData);
+				const initiativeToRemove = initiatives.indexOf(
+					userData[0].initiative
+				);
+				console.log("initiativeToRemove", initiativeToRemove);
+				const newActionOrder = initiatives;
+				// Si initiativeToRemove encontró el valor y el personaje
+				// es el primero en actuar, lo remueve del arreglo que sera el nuevo orden.
+				if (initiativeToRemove !== -1) {
+					newActionOrder.splice(initiativeToRemove, 1);
+				}
+				console.log("newActionOrder", newActionOrder);
+				setSessionInfo({
+					...sessionInfo,
+					actionOrder: newActionOrder,
+				});
+			});
+		} else {
+			setSessionInfo({
+				...sessionInfo,
+				actionOrder: initiatives,
+			});
+		}
+		console.log(sessionInfo);
 	}, [sessionInfo.round]);
 
 	useEffect(() => {
@@ -53,85 +76,6 @@ const BattleRoomDesk = () => {
 		}
 		console.log(formInfo);
 	}, [formInfo]);
-
-	// useEffect(() => {
-	// 	console.log("Funicono bien Effect actionOrder");
-	// 	if (sessionInfo.actionOrder.length === 0) {
-	// 		console.log("ActionOrder Length", sessionInfo.actionOrder.length);
-	// 		setSessionInfo({
-	// 			...sessionInfo,
-	// 			round: sessionInfo.round + 1,
-	// 		});
-	// 	}
-	// }, [sessionInfo.actionOrder]);
-
-	// useEffect(() => {
-	// 	let storedData = localStorage.getItem("rolpack");
-	// 	if (storedData === null) {
-	// 		return;
-	// 	} else if (sessionInfo.round === 0) {
-	// 		// Cargo los jugadores del localStorage.
-	// 		const rolpackPlayers = JSON.parse(storedData);
-	// 		// Ordeno a los jugadores de mayor a menos iniciativa.
-	// 		const sortedCharacters = [...rolpackPlayers].sort(
-	// 			(a, b) => b.initiative - a.initiative
-	// 		);
-	// 		// Consigo el valor de la iniciativa más alta.
-	// 		// const highestInitiative = sortedCharacters.reduce(
-	// 		// 	(maxInitiative, character) =>
-	// 		// 		Math.max(maxInitiative, character.initiative),
-	// 		// 	0
-	// 		// );
-	// 		// Entrego el atributo actions:1 a los jugadores con mayor iniciativa.
-	// 		// const activePlayers = sortedCharacters.map((character) => {
-	// 		// 	if (character.initiative == highestInitiative) {
-	// 		// 		return {
-	// 		// 			...character,
-	// 		// 			active: true,
-	// 		// 			actions: 1,
-	// 		// 		};
-	// 		// 	} else {
-	// 		// 		return { ...character, active: false, actions: 0 };
-	// 		// 	}
-	// 		// });
-
-	// 		setRoster(sortedCharacters);
-	// 		const uniqueInitiatives = sortedCharacters.map(
-	// 			(character) => character.initiative
-	// 		);
-	// 		const sortedUniqueInitiatives = uniqueInitiatives.sort(
-	// 			(a, b) => b - a
-	// 		);
-	// 		setSessionInfo({
-	// 			...sessionInfo,
-	// 			initiativeList: sortedUniqueInitiatives,
-	// 			actionOrder: sortedUniqueInitiatives,
-	// 		});
-	// 	} else {
-	// 		// Cargo los jugadores del localStorage.
-	// 		const rolpackPlayers = JSON.parse(storedData);
-	// 		setRoster(rolpackPlayers);
-
-	// 		const uniqueInitiatives = sortedCharacters.map(
-	// 			(character) => character.initiative
-	// 		);
-	// 		const sortedUniqueInitiatives = uniqueInitiatives.sort(
-	// 			(a, b) => b - a
-	// 		);
-	// 		setSessionInfo({
-	// 			...sessionInfo,
-	// 			initiativeList: sortedUniqueInitiatives,
-	// 		});
-	// 	}
-	// }, [formInfo.refreshRosterTrigger]);
-
-	// useEffect(() => {
-	// 	console.log("Informacion de la SESION", sessionInfo);
-	// }, [sessionInfo]);
-
-	// useEffect(() => {
-	// 	console.log("Modificando activeUsers");
-	// }, [sessionInfo.activeUsers]);
 
 	const handleStartBtn = () => {
 		const rolpackStorage = JSON.parse(localStorage.getItem("rolpack"));
